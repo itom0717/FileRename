@@ -83,39 +83,9 @@ try
             //新しいファイル名を生成
             newFilename = $"{pefix}_{fileTime.ToString("yyyyMMdd_HHmmss")}{Path.GetExtension(file)}";
 
-
-            if(mode == 1)
-            {
-                //保存先
-                string savePathYear = fileTime.ToString("yyyy");
-                string savePathMonth = fileTime.ToString("MM");
-                string savePathday = fileTime.ToString("dd");
-
-                //年のフォルダ作成
-                string saveFillPath = savePath;
-                saveFillPath = Path.Combine(saveFillPath, savePathYear);
-                if (!Directory.Exists(saveFillPath))
-                {
-                    Directory.CreateDirectory(saveFillPath);
-                }
-
-                //月のフォルダ作成
-                saveFillPath = Path.Combine(saveFillPath, savePathMonth);
-                if (!Directory.Exists(saveFillPath))
-                {
-                    Directory.CreateDirectory(saveFillPath);
-                }
-
-                //日のフォルダ作成
-                saveFillPath = Path.Combine(saveFillPath, savePathday);
-                if (!Directory.Exists(saveFillPath))
-                {
-                    Directory.CreateDirectory(saveFillPath);
-                }
-
-                newFilePath = Path.Combine(saveFillPath, newFilename);
-            }
-            else
+            //直近数日間はサブフォルダに移動させない
+            DateTime checkTime = DateTime.Now.AddDays(mode * -1);
+             if (mode <= 0 || checkTime <=fileTime)
             {
                 //同一階層
                 newFilePath = Path.Combine(filePath, newFilename);
@@ -127,6 +97,47 @@ try
                     break;
                 }
             }
+            else
+            {
+                //保存先
+                string savePathYear = fileTime.ToString("yyyy年");
+                string savePathMonth = fileTime.ToString("MM月");
+                string savePathday = fileTime.ToString("dd日");
+
+                //年のフォルダ作成
+                string saveFillPath = savePath;
+                saveFillPath = Path.Combine(saveFillPath, savePathYear);
+                if (!Directory.Exists(saveFillPath))
+                {
+                    Directory.CreateDirectory(saveFillPath);
+                }
+
+                ////月のフォルダ作成
+                //saveFillPath = Path.Combine(saveFillPath, savePathMonth);
+                //if (!Directory.Exists(saveFillPath))
+                //{
+                //    Directory.CreateDirectory(saveFillPath);
+                //}
+
+                ////日のフォルダ作成
+                //saveFillPath = Path.Combine(saveFillPath, savePathday);
+                //if (!Directory.Exists(saveFillPath))
+                //{
+                //    Directory.CreateDirectory(saveFillPath);
+                //}
+
+                //月日のフォルダ作成
+                saveFillPath = Path.Combine(saveFillPath, savePathMonth+savePathday);
+                if (!Directory.Exists(saveFillPath))
+                {
+                    Directory.CreateDirectory(saveFillPath);
+                }
+
+
+                newFilePath = Path.Combine(saveFillPath, newFilename);
+            }
+
+
 
             //同名が存在するかチェック
             if (!File.Exists(newFilePath))
@@ -140,10 +151,6 @@ try
             fileTime = fileTime.AddSeconds(1);
 
         } while (true);
-
-
-
-
     }
 
     Console.WriteLine($"終了しました。");
