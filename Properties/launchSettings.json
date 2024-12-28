@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "FileRename": {
+      "commandName": "Project",
+      "commandLineArgs": "\"F:\\Temp\\TEST\\Output\" *.* AIimage \"F:\\Temp\\TEST\\Output_Data\" 1"
+    }
+  }
+}
