@@ -2,7 +2,7 @@
   "profiles": {
     "FileRename": {
       "commandName": "Project",
-      "commandLineArgs": "\"F:\\Temp\\TEST\\ComfyUI\\01 青髪ちゃん\" *.* AIimage \"F:\\Temp\\TEST\\ComfyUI\\01 青髪ちゃん\"  3"
+      "commandLineArgs": "\"C:\\Users\\00385\\Desktop\\TEST\\T1\" *.* IMG 14"
     }
   }
 }
