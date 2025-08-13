@@ -59,19 +59,41 @@ try
             //あり得ないが処理しない
             continue;
         }
+        if (filename.ToLower() == "desktop.ini".ToLower())
+        {
+            continue;
+        }
+
+
+
 
         //最終更新日時を取得
         DateTime fileTime = File.GetLastWriteTime(file);
 
         string newFilename;
         string newFilePath;
+        int suffixus = 0;
         do//同名が存在する場合の対策（存在しなくなるまでループ）
         {
             //新しいファイル名を生成
-            newFilename = $"{pefix}_{fileTime.ToString("yyyyMMdd_HHmmss")}{Path.GetExtension(file)}";
+            if (pefix != "*")
+            {
+                newFilename = $"{pefix}_{fileTime.ToString("yyyyMMdd_HHmmss")}{Path.GetExtension(file)}";
+            }
+            else
+            {
+                //変更しない
+                newFilename = filename;
+                if(suffixus > 0)
+                {
+                    //同名があるので、最後に数値をつける
+                    newFilename = Path.GetFileNameWithoutExtension(filename) + $"-{suffixus.ToString()}." + Path.GetExtension(filename);
+                }
+            }
 
             //指定日数以上はサブフォルダに移動させる
             DateTime checkTime = DateTime.Now.AddDays(notMovedays * -1);
+            string moveFolder = "";
             if (notMovedays <= 0 || checkTime <= fileTime)
             {
                 //移動させない
@@ -96,6 +118,7 @@ try
                 //年のフォルダ作成
                 string saveFillPath = tgtPath;
                 saveFillPath = Path.Combine(saveFillPath, savePathYear);
+                moveFolder += $"{savePathYear}";
                 if (!Directory.Exists(saveFillPath))
                 {
                     Directory.CreateDirectory(saveFillPath);
@@ -103,6 +126,7 @@ try
 
                 //月のフォルダ作成
                 saveFillPath = Path.Combine(saveFillPath, savePathMonth);
+                moveFolder += $"\\{savePathMonth}";
                 if (!Directory.Exists(saveFillPath))
                 {
                     Directory.CreateDirectory(saveFillPath);
@@ -117,12 +141,23 @@ try
             {
                 //ファイル名を変更
                 File.Move(file, newFilePath);
-                Console.WriteLine($"[{filename}] → [{newFilename}]");
+
+                if (moveFolder == "")
+                {
+                    //ファイル名変更のみ
+                    Console.WriteLine($"[{filename}] → [{newFilename}]");
+                }
+                else
+                {
+                    //フォルダ移動+ファイル名変更
+                    Console.WriteLine($"[{filename}] → [{moveFolder}\\{newFilename}]");
+                }
                 break;
             }
 
             //存在するので、1秒進めたファイル名する
             fileTime = fileTime.AddSeconds(1);
+            suffixus++;
 
         } while (true);
     }
